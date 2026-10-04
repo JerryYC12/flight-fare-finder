@@ -6,7 +6,7 @@ import { Logo } from "@/components/Logo";
 type Search = { mode?: "signin" | "signup" };
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>): Search => ({ mode: s.mode === "signup" ? "signup" : "signin" }),
+  validateSearch: (s: Record<string, unknown>): Search => ({ mode: s["mode"] === "signup" ? "signup" : "signin" }),
   head: () => ({
     meta: [
       { title: "Sign in — Flight Price Notifier" },
