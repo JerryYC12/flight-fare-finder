@@ -1,25 +1,27 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouteLoaderData } from "react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Logo } from "@/components/Logo";
+import { usePageMeta, type PageMeta } from "@/hooks/use-page-meta";
+import type { AuthenticatedData } from "@/app/routes";
 
-export const Route = createFileRoute("/_authenticated/app")({
-  head: () => ({
-    meta: [
-      { title: "Dashboard — Flight Price Notifier" },
-      { name: "description", content: "Your Flight Price Notifier dashboard." },
-      { property: "og:title", content: "Dashboard — Flight Price Notifier" },
-      { property: "og:description", content: "Your Flight Price Notifier dashboard." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "robots", content: "noindex" },
-    ],
-  }),
-  component: AppPage,
-});
+const pageMeta: PageMeta = {
+  title: "Dashboard — Flight Price Notifier",
+  meta: [
+    { name: "description", content: "Your Flight Price Notifier dashboard." },
+    { property: "og:title", content: "Dashboard — Flight Price Notifier" },
+    { property: "og:description", content: "Your Flight Price Notifier dashboard." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex" },
+  ],
+};
 
-function AppPage() {
-  const { user } = Route.useRouteContext();
+export function AppPage() {
+  usePageMeta(pageMeta);
+  // Provided by the `requireUser` loader on the "authenticated" route, which redirects
+  // signed-out visitors before this component renders.
+  const { user } = useRouteLoaderData("authenticated") as AuthenticatedData;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -27,7 +29,7 @@ function AppPage() {
     await queryClient.cancelQueries();
     queryClient.clear();
     await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
+    navigate("/sign-in", { replace: true });
   }
 
   return (
