@@ -1,27 +1,22 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "react-router";
 import { useEffect, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Logo } from "@/components/Logo";
+import { usePageMeta, type PageMeta } from "@/hooks/use-page-meta";
 
-type Search = { mode?: "signin" | "signup" };
+const pageMeta: PageMeta = {
+  title: "Sign in — Flight Price Notifier",
+  meta: [
+    { name: "description", content: "Sign in or create your Flight Price Notifier account." },
+    { property: "og:title", content: "Sign in — Flight Price Notifier" },
+    { property: "og:description", content: "Sign in or create your Flight Price Notifier account." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+  ],
+};
 
-export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>): Search => ({ mode: s["mode"] === "signup" ? "signup" : "signin" }),
-  head: () => ({
-    meta: [
-      { title: "Sign in — Flight Price Notifier" },
-      { name: "description", content: "Sign in or create your Flight Price Notifier account." },
-      { property: "og:title", content: "Sign in — Flight Price Notifier" },
-      { property: "og:description", content: "Sign in or create your Flight Price Notifier account." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
-  component: AuthPage,
-});
-
-function AuthPage() {
-  const { mode = "signin" } = Route.useSearch();
+export function AuthPage({ mode }: { mode: "signin" | "signup" }) {
+  usePageMeta(pageMeta);
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,7 +26,7 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/app", replace: true });
+      if (data.user) navigate("/app", { replace: true });
     });
   }, [navigate]);
 
@@ -44,7 +39,7 @@ function AuthPage() {
       : await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) return setError(error.message);
-    navigate({ to: "/app", replace: true });
+    navigate("/app", { replace: true });
   }
 
   const input = "w-full rounded-lg border bg-input/30 px-4 py-3 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-ring/40";
@@ -66,7 +61,7 @@ function AuthPage() {
           </form>
           <p className="mt-6 text-center text-sm text-muted-foreground">
             {isSignup ? "已經有帳號？" : "還沒有帳號？"}{" "}
-            <Link to="/auth" search={{ mode: isSignup ? "signin" : "signup" }} className="text-accent hover:underline">
+            <Link to={isSignup ? "/sign-in" : "/sign-up"} className="text-accent hover:underline">
               {isSignup ? "Sign in" : "Sign up"}
             </Link>
           </p>

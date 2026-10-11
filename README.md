@@ -19,6 +19,22 @@ Prefer working locally? You need Node.js and npm — [install with nvm](https://
 ```sh
 git clone <this-repository-url>
 cd <repository-name>
-npm i
-npm run dev
+bun install   # or: npm i
+bun run dev   # or: npm run dev
 ```
+
+## Architecture
+
+A plain **Vite + React** single-page app (no SSR):
+
+- `index.html` → `src/main.tsx` mounts the app.
+- Client-side routing with **React Router** (`src/app/routes.tsx`):
+  `/` (landing), `/sign-in`, `/sign-up`, `/app` (requires login; legacy `/auth?mode=…` redirects).
+- Auth via Supabase (`src/integrations/supabase/client.ts`), configured with
+  `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` (inlined at build time).
+
+## Deploying to Vercel
+
+`vite build` emits a static site to `dist/`. `vercel.json` sets the Vite preset,
+output directory, and an SPA fallback rewrite so deep links like `/app` load
+`index.html` and are resolved client-side.

@@ -1,21 +1,19 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "react-router";
 import { Radar, BellRing, CalendarX } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { Reveal } from "@/components/Reveal";
+import { usePageMeta, type PageMeta } from "@/hooks/use-page-meta";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Flight Price Notifier — 機票降價通知" },
-      { name: "description", content: "設定航線與目標價，機票降價就通知你。Set a route and a target price — we email you when the fare drops." },
-      { property: "og:title", content: "Flight Price Notifier — 機票降價通知" },
-      { property: "og:description", content: "Set a route and a target price — we email you when the fare drops." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: Index,
-});
+const pageMeta: PageMeta = {
+  title: "Flight Price Notifier — 機票降價通知",
+  meta: [
+    { name: "description", content: "設定航線與目標價，機票降價就通知你。Set a route and a target price — we email you when the fare drops." },
+    { property: "og:title", content: "Flight Price Notifier — 機票降價通知" },
+    { property: "og:description", content: "Set a route and a target price — we email you when the fare drops." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary_large_image" },
+  ],
+};
 
 const features = [
   { icon: Radar, title: "盯緊熱門航線", en: "Always-on route watching", body: "持續監控台北出發的熱門航線（東京、首爾），自動抓最低票價。" },
@@ -23,13 +21,14 @@ const features = [
   { icon: CalendarX, title: "隨時取消", en: "Cancel anytime", body: "月訂閱制，不想用隨時停，沒有綁約。" },
 ];
 
-function Index() {
+export function Index() {
+  usePageMeta(pageMeta);
   return (
     <div className="relative min-h-screen overflow-hidden">
       <div className="pointer-events-none absolute inset-0 bg-glow" />
       <header className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
         <Logo />
-        <Link to="/auth" className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-glow transition hover:opacity-90">
+        <Link to="/sign-in" className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-glow transition hover:opacity-90">
           Sign in / 登入
         </Link>
       </header>
@@ -41,7 +40,7 @@ function Index() {
             <h1 className="text-gradient text-5xl font-bold tracking-tight md:text-7xl">Flight Price Notifier</h1>
             <p className="mt-6 text-xl font-medium md:text-2xl">設定航線與目標價，機票降價就通知你</p>
             <p className="mt-3 text-muted-foreground">Set a route and a target price — we email you when the fare drops.</p>
-            <Link to="/auth" search={{ mode: "signup" }} className="mt-10 inline-block rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground shadow-glow transition hover:opacity-90">
+            <Link to="/sign-up" className="mt-10 inline-block rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground shadow-glow transition hover:opacity-90">
               開始使用 · Get started
             </Link>
           </Reveal>
