@@ -30,8 +30,19 @@ A plain **Vite + React** single-page app (no SSR):
 - `index.html` → `src/main.tsx` mounts the app.
 - Client-side routing with **React Router** (`src/app/routes.tsx`):
   `/` (landing), `/sign-in`, `/sign-up`, `/app` (requires login; legacy `/auth?mode=…` redirects).
-- Auth via Supabase (`src/integrations/supabase/client.ts`), configured with
-  `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` (inlined at build time).
+- Auth via the project's own Supabase project (`src/integrations/supabase/client.ts`,
+  the single client instance), configured from env vars inlined at build time.
+
+## Environment variables
+
+| Name | Value |
+| --- | --- |
+| `VITE_SUPABASE_URL` | `https://wcymkihqbhqiziktwhnl.supabase.co` |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | the project's `sb_publishable_…` key (Supabase → Project Settings → API Keys) |
+
+The publishable key replaces the legacy "anon" key: it is browser-safe and access is
+enforced by Row Level Security. Locally these live in `.env`; on Vercel add the same two
+variables under Project → Settings → Environment Variables.
 
 ## Deploying to Vercel
 
